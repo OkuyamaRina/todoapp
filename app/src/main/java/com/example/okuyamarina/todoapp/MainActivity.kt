@@ -6,16 +6,19 @@ import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 import com.example.okuyamarina.todoapp.R.layout.dialog_todo_input
 import kotlinx.android.synthetic.main.dialog_todo_input.*
+import kotlinx.android.synthetic.main.dialog_todo_input.view.*
+import kotlinx.android.synthetic.main.my_text_view.view.*
 
-class MainActivity : AppCompatActivity(), NoticeDialogFragment.NoticeDialogListener {
+class MainActivity : AppCompatActivity(), NoticeDialogFragment.NoticeDialogListener, EditDialogFragment.EditDialogListener {
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var viewAdapter: RecyclerView.Adapter<*>
+    private lateinit var viewAdapter: MyAdapter
     private lateinit var viewManager: RecyclerView.LayoutManager
 
     // サイズ0の配列
@@ -28,6 +31,10 @@ class MainActivity : AppCompatActivity(), NoticeDialogFragment.NoticeDialogListe
 
         viewManager = LinearLayoutManager(this)
         viewAdapter = MyAdapter(myDataset)
+        viewAdapter.onClick = {text, position ->
+            val dialog = EditDialogFragment.newInstance(text,position)
+            dialog.show(supportFragmentManager, "EditDialogFragment")
+        }
 
         recyclerView = findViewById<RecyclerView>(R.id.my_recycler_view).apply {
             // use this setting to improve performance if you know that changes
@@ -43,14 +50,8 @@ class MainActivity : AppCompatActivity(), NoticeDialogFragment.NoticeDialogListe
         myDataset.add("A")
     }
     fun addToDo(view: View){
-        val newFragment = NoticeDialogFragment()
-        newFragment.show(supportFragmentManager,"test")
-    }
-
-    fun showNoticeDialog() {
-        // Create an instance of the dialog fragment and show it
         val dialog = NoticeDialogFragment()
-        dialog.show(supportFragmentManager, "NoticeDialogFragment")
+        dialog.show(supportFragmentManager,"NoticeDialogFragment")
     }
     override fun onDialogPositiveClick(text : String){
         // /EditText(テキスト)を取得し、アダプタに追加
@@ -58,15 +59,14 @@ class MainActivity : AppCompatActivity(), NoticeDialogFragment.NoticeDialogListe
         viewAdapter.notifyDataSetChanged()
     }
 
+    override fun onEditDialogPositiveClick(text : String, position : Int){
+        myDataset.set(position,text)
+        viewAdapter.notifyDataSetChanged()
+    }
+
     override fun onDialogNegativeClick(dialog: DialogFragment) {
 
     }
-
-    fun setToDo(){
-        //EditTextオブジェクト取得
-        //val todo : EditText = todo_text
-        val todo: EditText = findViewById(R.id.todo_text)
-        // /EditText(テキスト)を取得し、アダプタに追加
-        myDataset.add(todo.getText().toString())
+    override fun onDialogNegativeClick() {
     }
 }
