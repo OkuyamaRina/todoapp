@@ -1,19 +1,11 @@
 package com.example.okuyamarina.todoapp
 
-import android.app.Activity
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.View
-import android.widget.EditText
-import android.widget.TextView
-import com.example.okuyamarina.todoapp.R.layout.dialog_todo_input
-import kotlinx.android.synthetic.main.dialog_todo_input.*
-import kotlinx.android.synthetic.main.dialog_todo_input.view.*
-import kotlinx.android.synthetic.main.my_text_view.view.*
 
 class MainActivity : AppCompatActivity(), NoticeDialogFragment.NoticeDialogListener, EditDialogFragment.EditDialogListener {
 
@@ -34,6 +26,10 @@ class MainActivity : AppCompatActivity(), NoticeDialogFragment.NoticeDialogListe
         viewAdapter.onClick = {text, position ->
             val dialog = EditDialogFragment.newInstance(text,position)
             dialog.show(supportFragmentManager, "EditDialogFragment")
+        }
+        viewAdapter.onLongClick = {
+            myDataset.removeAt(it)
+            viewAdapter.notifyDataSetChanged()
         }
 
         recyclerView = findViewById<RecyclerView>(R.id.my_recycler_view).apply {

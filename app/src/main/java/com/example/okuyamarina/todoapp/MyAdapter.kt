@@ -13,6 +13,7 @@ class MyAdapter(private var myDataset: ArrayList<String>) :
     class ViewHolder(val textView: TextView) : RecyclerView.ViewHolder(textView)
 
     var onClick : (text : String, position : Int) -> Unit = {_ , _ ->}
+    var onLongClick: (position: Int) -> Unit = {}
 
     // Create new views (invoked by the layout manager)
     override fun onCreateViewHolder(parent: ViewGroup,
@@ -22,6 +23,10 @@ class MyAdapter(private var myDataset: ArrayList<String>) :
                 .inflate(R.layout.my_text_view, parent, false) as TextView
         var viewholder = ViewHolder(textView)
         textView.setOnClickListener { onClick(textView.text.toString(),viewholder.adapterPosition) }
+        textView.setOnLongClickListener {
+            onLongClick(viewholder.adapterPosition)
+            false
+        }
 
         // set the view's size, margins, paddings and layout parameters
         // ...
